@@ -1,0 +1,132 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import models, IntegrityError
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import JSONField
+from django.utils import timezone
+
+import uuid
+
+
+class Vault(models.Model):
+    operator_id = models.CharField(max_length=128)
+    password = models.CharField(max_length=256)
+
+    def save(self, *args, **kwargs):
+        try:
+            current = Vault.objects.get(id=self.id)
+            if (current.password != str(self.password)):
+                self.password = Vault.get_hashed_password(str(self.password))
+        except Vault.DoesNotExist:
+            self.password = Vault.get_hashed_password(str(self.password))
+        super(Vault, self).save(*args, **kwargs)
+
+    @staticmethod
+    def get_hashed_password(password):
+        # Hash a password for the first time
+        # Using bcrypt, the salt is saved into the hash itself
+        import bcrypt
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(password, salt)
+
+    def check_password(self, password):
+        # Check hased password. Using bcrypt, the salt is saved into the hash itself
+        import bcrypt
+        try:
+            return bcrypt.hashpw(password, str(self.password)) == str(self.password)
+        except Exception:
+            # If Password has invalid Salt
+            return False
+
+
+class Operator(models.Model):
+    """
+    Stores the basic information about operator
+    """
+    TYPE_CHOICES = [
+        ('manager', 'Manager'),
+        ('delivery_person', 'Delivery Person')
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    username = models.CharField(max_length=16, unique=True)
+    operator_type = models.CharField(
+        max_length=16, choices=TYPE_CHOICES, default='delivery_person')
+    modified = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        instance, created = cls.objects.get_or_create(username=kwargs.get('username', ''))
+        if created:
+            Vault.objects.create(
+                app_name="core", operator_id=instance.id, password=kwargs.get('password', ''))
+        instance.operator_type = kwargs.get('operator_type', '')
+        instance.save()
+        return instance
+
+    @property
+    def vault(self, model='vault'):
+        return ContentType.objects.get(
+            app_label='core', model=model).model_class().objects.get(operator_id=self.id)
+
+
+    @classmethod
+    def getAuthenticatedOperator(cls, request):
+        """ Decorator uses this method to get authenticated user
+        """
+        try:
+            data = json.loads(request.session['authToken'])
+            return cls.objects.get(username=data['username'])
+        except cls.DoesNotExist:
+            return None
+
+    def accessToken(self):
+        """ Generate the accessToken, currently using simple JSON.
+        JWT Token or any other strong algo can be used to generate
+        this accessToken
+        """
+        return json.dumps({"username": self.username})
+
+    @classmethod
+    def validateOperator(cls, request):
+        """ This class method validate users form when he tries to login
+        return accessToken will be saved in session.
+        """
+        data = request.POST.dict()
+        try:
+            operator = cls.objects.get(username=data.get('username', ''))
+            validated = self.vault().check_password(data.get('password', ''))
+            if validated:
+                return operator.accessToken(), "Hi %s!. You had been successfully authenticated." % user.username
+            return None, "Invalid Password Provided."
+        except cls.DoesNotExist:
+            return None, 'Invalid Username Provided.'
+        return None, 'Something went wrong! Please try again.'
+
+
+class Task(models.Model):
+    PRIORITY_CHOICES = (('low', 'Low'), ('medium', 'Medium'), ('high', 'High'))
+    STATE_CHOICES = (
+        ('new', 'New'), ('cancelled', 'Cancelled'),
+        ('accepted', 'Accepted'), ('decline', 'Decline'),
+        ('completed', 'Completed')
+    )
+    title = models.CharField(max_length=128)
+    created_by = models.ForeignKey(Operator)
+    accepted_by = models.ForeignKey(Operator)
+    priority = models.CharField(
+        max_length=16, choices=PRIORITY_CHOICES, default='low')
+    state = models.CharField(
+        max_length=16, choices=STATE_CHOICES, default='new')
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    timeline = JSONField(default=[])
+
+    def addTimeline(self, current):
+        self.timeline.append({
+            "state": self.state,
+            "time": timezone.now().strftime("%d/%m/%Y %H:%M:%S"),
+            "created_by": self.created_by.username,
+            "accepted_by": self.accepted_by.username
+        })
