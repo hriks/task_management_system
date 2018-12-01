@@ -7,6 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 
 import uuid
+import json
 
 
 class Vault(models.Model):
@@ -31,10 +32,14 @@ class Vault(models.Model):
         return bcrypt.hashpw(password, salt)
 
     def check_password(self, password):
-        # Check hased password. Using bcrypt, the salt is saved into the hash itself
+        """
+        check hased password. Using bcrypt, the salt is saved into the
+        hash itself
+        """
         import bcrypt
         try:
-            return bcrypt.hashpw(password, str(self.password)) == str(self.password)
+            return bcrypt.hashpw(
+                password, str(self.password)) == str(self.password)
         except Exception:
             # If Password has invalid Salt
             return False
@@ -57,10 +62,12 @@ class Operator(models.Model):
 
     @classmethod
     def create(cls, *args, **kwargs):
-        instance, created = cls.objects.get_or_create(username=kwargs.get('username', ''))
+        instance, created = cls.objects.get_or_create(
+            username=kwargs.get('username', ''))
         if created:
             Vault.objects.create(
-                app_name="core", operator_id=instance.id, password=kwargs.get('password', ''))
+                app_name="core", operator_id=instance.id,
+                password=kwargs.get('password', ''))
         instance.operator_type = kwargs.get('operator_type', '')
         instance.save()
         return instance
@@ -68,8 +75,8 @@ class Operator(models.Model):
     @property
     def vault(self, model='vault'):
         return ContentType.objects.get(
-            app_label='core', model=model).model_class().objects.get(operator_id=self.id)
-
+            app_label='core', model=model
+        ).model_class().objects.get(operator_id=self.id)
 
     @classmethod
     def getAuthenticatedOperator(cls, request):
@@ -96,9 +103,10 @@ class Operator(models.Model):
         data = request.POST.dict()
         try:
             operator = cls.objects.get(username=data.get('username', ''))
-            validated = self.vault().check_password(data.get('password', ''))
+            validated = operator.vault().check_password(
+                data.get('password', ''))
             if validated:
-                return operator.accessToken(), "Hi %s!. You had been successfully authenticated." % user.username
+                return operator.accessToken(), "Hi %s!. You had been successfully authenticated." % user.username  # noqa
             return None, "Invalid Password Provided."
         except cls.DoesNotExist:
             return None, 'Invalid Username Provided.'
@@ -113,20 +121,51 @@ class Task(models.Model):
         ('completed', 'Completed')
     )
     title = models.CharField(max_length=128)
-    created_by = models.ForeignKey(Operator)
-    accepted_by = models.ForeignKey(Operator)
-    priority = models.CharField(
-        max_length=16, choices=PRIORITY_CHOICES, default='low')
+    created_by = models.ForeignKey(Operator, related_name='creator',)
+    accepted_by = models.ForeignKey(
+        Operator, related_name='delivery_person', null=True, blank=True)
+    priority = models.CharField(max_length=16, choices=PRIORITY_CHOICES)
     state = models.CharField(
         max_length=16, choices=STATE_CHOICES, default='new')
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
     timeline = JSONField(default=[])
+    modified = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
-    def addTimeline(self, current):
+    def save(self, *args, **kwargs):
+        try:
+            current = Task.objects.get(id=self.id)
+            if current.state != self.state:
+                self.addTimeline()
+        except Task.DoesNotExist:
+            self.addTimeline()
+        super(Task, self).save(*args, **kwargs)
+
+    def addTimeline(self):
         self.timeline.append({
             "state": self.state,
             "time": timezone.now().strftime("%d/%m/%Y %H:%M:%S"),
-            "created_by": self.created_by.username,
-            "accepted_by": self.accepted_by.username
+            "created_by": self.created_by.username if self.created_by else '-'
         })
+
+    def updateState(self, data, operator=None):
+        self.state = data.get('state')
+        if self.state == 'accepted' and operator:
+            assert Task.objects.filter(
+                state="accepted", accepted_by=operator
+            ).count() < 3, "Delivery Person could not have more than 3 pending tasks."  # noqa
+            self.accepted_by = operator
+        self.save()
+
+    @classmethod
+    def create(cls, title, operator, priority="low"):
+        assert operator.operator_type == 'manager', 'Only manager can create new ticket.'  # noqa
+        cls.objects.create(title=title, created_by=operator, priority=priority)
+
+    @classmethod
+    def getTasksList(cls, operator=None):
+        from core.serializers import TaskSerializer
+        queryset = cls.objects.all()
+        if operator.operator_type == 'delivery_person' or operator is None:
+            queryset = queryset.filter(
+                accepted_by=operator).exclude(state="new")
+        return TaskSerializer(queryset, many=True).data
