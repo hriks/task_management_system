@@ -39,7 +39,7 @@ class Vault(models.Model):
         import bcrypt
         try:
             return bcrypt.hashpw(
-                password, str(self.password)) == str(self.password)
+                str(password), str(self.password)) == str(self.password)
         except Exception:
             # If Password has invalid Salt
             return False
@@ -54,7 +54,7 @@ class Operator(models.Model):
         ('delivery_person', 'Delivery Person')
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    username = models.CharField(max_length=16, unique=True)
+    username = models.CharField(max_length=6, unique=True)
     operator_type = models.CharField(
         max_length=16, choices=TYPE_CHOICES, default='delivery_person')
     modified = models.DateTimeField(auto_now=True)
@@ -66,9 +66,9 @@ class Operator(models.Model):
             username=kwargs.get('username', ''))
         if created:
             Vault.objects.create(
-                app_name="core", operator_id=instance.id,
+                operator_id=instance.id,
                 password=kwargs.get('password', ''))
-        instance.operator_type = kwargs.get('operator_type', '')
+        instance.operator_type = kwargs.get('operator_type')
         instance.save()
         return instance
 
@@ -103,10 +103,10 @@ class Operator(models.Model):
         data = request.POST.dict()
         try:
             operator = cls.objects.get(username=data.get('username', ''))
-            validated = operator.vault().check_password(
+            validated = operator.vault.check_password(
                 data.get('password', ''))
             if validated:
-                return operator.accessToken(), "Hi %s!. You had been successfully authenticated." % user.username  # noqa
+                return operator.accessToken(), "Hi %s!. You had been successfully authenticated." % operator.username  # noqa
             return None, "Invalid Password Provided."
         except cls.DoesNotExist:
             return None, 'Invalid Username Provided.'
@@ -164,8 +164,13 @@ class Task(models.Model):
     @classmethod
     def getTasksList(cls, operator=None):
         from core.serializers import TaskSerializer
-        queryset = cls.objects.all()
-        if operator.operator_type == 'delivery_person' or operator is None:
-            queryset = queryset.filter(
-                accepted_by=operator).exclude(state="new")
-        return TaskSerializer(queryset, many=True).data
+        queryset = cls.objects.exclude(state='new')
+        newTaskQuerySet = cls.objects.filter(state="new")
+        if operator and operator.operator_type == 'delivery_person':
+            queryset = queryset.filter(accepted_by=operator)
+            newTaskQuerySet = newTaskQuerySet.objects.filter(
+                operator=operator, priority="high").earliest('created')
+        return {
+            "tasks": TaskSerializer(queryset, many=True).data,
+            "new_tasks": TaskSerializer(newTaskQuerySet, many=True).data
+        }

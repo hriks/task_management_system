@@ -1,0 +1,581 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.tabbable-line > .nav-tabs > li > a.tab-none:hover,
+.tabbable-line > .nav-tabs > li > a.tab-none,
+.tabbable-line > .nav-tabs > li.tab-none:hover {
+    border-bottom: 4px solid;
+    border: 0;
+    font-family: 'Roboto', serif;
+    font-weight: 500;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #525661;
+}
+
+.navbar-inverse {
+    background-color: white;
+    border-color: ghostwhite;
+    height: 60px;
+    width: 100%;
+    padding: 10px;
+    color: #000000;
+}
+
+.navbar-inverse .navbar-toggle{
+    border-color: antiquewhite;
+}
+
+.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover, .tabbable-panel {
+    background-color: white;
+}
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+    background-color: white;
+    z-index: 100
+}
+
+#myNavbar {
+    width: 55%;
+    float: right;
+    overflow-x: hidden;
+    border-radius: 5px
+}
+
+@media (min-width: 768px){
+    .navbar-right .dropdown-menu {
+        right: 15px;
+        left: auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+        color: white;
+        font-weight: bold;
+        float: right;
+    }
+    .dropdown-toggle {
+        float: right;
+    }
+}
+
+.title {
+    font-family: 'Roboto', serif;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000000;
+}
+
+a img {
+    height: 35px;
+    margin: -15px;
+}
+
+.username {
+    float: right;
+    right: 10px;
+    margin-top: 3px;
+    font-family: 'Roboto', serif;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: right;
+    color: #ffffff;
+}
+
+.con-body{
+    height: calc(100% - 60px);
+    width: 100%;
+    padding: 0
+}
+
+.card{
+    border-radius: 5px;
+    background-color: rgba(45, 203, 151, 0.05);
+    width: 100%;
+    padding-left: 14px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-right: 25px;
+}
+
+.card-heading{
+    opacity: 0.5;
+    font-family: 'Roboto', serif;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #000000;
+}
+
+.card-amount{
+    opacity: 0.8;
+    font-family: 'Roboto', serif;
+    font-size: 24px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 0.75;
+    letter-spacing: normal;
+    color: #000000;
+    padding-top: 16px;
+}
+.card-lower-amount{
+    opacity: 0.8;
+    font-family: 'Roboto', serif;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 0.75;
+    letter-spacing: normal;
+    color: #000000;
+}
+
+.lower-card-heading{
+    opacity: 0.5;
+    font-family: 'Roboto', serif;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #000000;
+    padding-top: 32px;
+}
+.lower-card-heading > .col-sm-9, .lower-card-heading > .col-sm-3, .exceptional-head > .col-sm-9,
+.card-lower-amount > .col-sm-9, .card-lower-amount > .col-sm-3, .exceptional-head > .col-sm-3,
+.card-lower-amount > .col-sm-12, .lower-card-heading > .col-sm-12{
+    position: relative;
+    min-height: 1px;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.tabbable-line > .nav-tabs {
+    border: none;
+    margin: 0px;
+}
+
+.tabbable-line > .nav-tabs > li {
+    margin-right: 2px;
+}
+
+.tabbable-line > .nav-tabs > li > a {
+    border: 0;
+    margin-right: 0;
+    color: #737373;
+    font-family: 'Roboto', serif;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    opacity: 0.4
+}
+.tabbable-line > .nav-tabs > li > a > i {
+    color: #a6a6a6;
+}
+
+.tabbable-line > .nav-tabs > li.open > a, .tabbable-line > .nav-tabs > li:hover > a {
+    border: 0;
+    background: none !important;
+    color: #000000;
+    font-weight: 500px
+}
+
+.tabbable-line > .nav-tabs > li.open > a > i, .tabbable-line > .nav-tabs > li:hover > a > i {
+    color: #000000;
+    font-weight: 500px
+}
+
+.tabbable-line > .nav-tabs > li.open .dropdown-menu, .tabbable-line > .nav-tabs > li:hover .dropdown-menu {
+    margin-top: 0px;
+}
+
+.tabbable-line > .nav-tabs > li.active > a {
+    border: 0;
+    font-family: 'Roboto', serif;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000000;
+    opacity: 0.7
+}
+
+.tabbable-line > .nav-tabs > li > span {
+    border: 0;
+    margin-right: 0;
+    color: #737373;
+    font-family: 'Roboto', serif;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    opacity: 0.4
+}
+.nav>li>span {
+    position: relative;
+    display: block;
+    padding: 5px 15px;
+    cursor: not-allowed;
+}
+
+.tabbable-line > .nav-tabs > li.active > a > i {
+    color: #404040;
+}
+
+.tabbable-line {
+    margin-top: -3px;
+    background-color: #fff;
+    border: 0;
+    padding: 5px 0;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+
+.portlet .tabbable-line > .tab-content {
+    padding-bottom: 0;
+}
+
+.tabbable-line.tabs-below > .nav-tabs > li {
+    border-top: 4px solid transparent;
+}
+
+.tabbable-line.tabs-below > .nav-tabs > li > a {
+    margin-top: 0;
+}
+
+.tabbable-line.tabs-below > .nav-tabs > li:hover {
+    border-bottom: 0;
+    border-top: 4px solid #2dcb97;
+}
+
+.tabbable-line.tabs-below > .nav-tabs > li.active {
+    margin-bottom: -2px;
+    border-bottom: 0;
+    border-top: 4px solid #f3565d;
+}
+
+.tabbable-line.tabs-below > .tab-content {
+    margin-top: -10px;
+    border-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.table-striped>tbody>tr:nth-of-type(even){
+    background-color: #fbfbfb;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd){
+    background-color: white;
+}
+
+.table>thead>tr>th, .table>tbody>tr>td{
+    border-bottom: 0;
+    border-top: 0;
+}
+
+button.btn.btn-primary.dropdown-toggle, button.btn.btn-primary.dropdown-toggle:hover, button.btn.btn-primary.dropdown-toggle:focus {
+    background-color: white;
+    color: #000000;
+    opacity: 0.6  ;
+    border-color: white
+}
+
+.td-inside {
+    font-family: 'Roboto', serif;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.71;
+    letter-spacing: normal;
+    text-align: left;
+    color: rgba(82, 86, 97, 0.5);
+}
+
+.td-main {
+    font-family: 'Roboto', serif;
+    font-size: 15px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #525661;
+}
+
+td p {
+    margin: 0 0 0px;
+}
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    border-top: 0px solid #ddd;
+}
+.dropdown-menu {
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    min-width: 160px;
+    font-size: 14px;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+.navbar{
+    margin-bottom: 0px
+}
+@media only screen and (min-width:320px) and (max-width:800px) {
+    .tabbable-line > .nav-tabs > li.active > a {
+        font-size: 11px
+    }
+    .tabbable-line > .nav-tabs > li > a {
+        font-size: 10px;
+    }
+    .tabbable-line > .nav-tabs > li > a.tab-none:hover, .tabbable-line > .nav-tabs > li > a.tab-none, .tabbable-line > .nav-tabs > li.tab-none:hover {
+        font-size: 11px;
+    }
+    .nav>li>a {
+        position: relative;
+        display: block;
+        padding: 5px 7px;
+    }
+    th {
+        font-size: 9px
+    }
+    td > p {
+        font-size: 11px
+    }
+    .card-heading {
+        font-size: 14px
+    }
+    .card-amount {
+        font-size: 20px
+    }
+    .card-lower-amount{
+        font-size: 14px
+    }
+    .lower-card-heading{
+        font-size: 14px
+    }
+    .card-lower-amount > .col-sm-9 {
+        margin-bottom: 10px;
+    }
+    .row > .col-sm-4, .row > .col-sm-6 {
+        margin-bottom: 2px
+    }
+    .td-main {
+        font-size: 8px
+    }
+    .td-inside {
+        font-size: 6px
+    }
+}
+.navbar-nav>li {
+    margin: 8px;
+    left: 20px;
+    opacity: 0.4;
+}
+@media (min-width: 768px) {
+.navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+    margin-left: 15px;
+}
+.tab-content, .con-body {
+  background-color: #f7f7f7;
+}
+.tick {color: #64b66b}
+.cross {color: red}
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+::-webkit-scrollbar {
+    width: 8px;
+    margin: 10px
+}
+
+::-webkit-scrollbar-thumb {
+    background: #37c590;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-border-radius: 10px;
+    padding: 10px;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+}
+
+#loader {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 260px;
+  z-index: 1;
+  width: 80px;
+  height: 80px;
+  margin: -70px 0 0 -70px;
+  border: 2px solid mediumseagreen;
+  border-radius: 59%;
+  border-top: 2px solid #f3f3f3;
+  -webkit-animation: spin 1.5s linear infinite;
+  animation: spin 0.6s linear infinite
+ }
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
+}
+@-webkit-keyframes animatebottom {
+    from {
+        bottom:-100px; opacity:0
+    } to {
+        bottom:0px; opacity:1
+    }
+}
+@keyframes animatebottom {
+    from{
+        bottom:-100px; opacity:0
+    } to {
+        bottom:0; opacity:1
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000000;
+    left: 0;
+    top: 60px;
+    width: 100%;
+    height: calc(100% - 62px);
+    background-color: #f7f7f7;
+    padding-top: 50px;
+    position: fixed;
+}
+
+.modal-content {
+    margin: 0% auto 15% auto;
+    width: 40%;
+    background-color: #ffffff;
+    min-height: 25%;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1) !important;
+    border-radius: 0;
+    border-color: #f7f7f7;
+}
+
+.pagination > li {
+  cursor: pointer;
+}
+
+button[type=submit], button[type=submit]:active {
+    border-radius: 2px;
+    background-image: linear-gradient(to bottom, #4bd2a9, #3cba92);
+    border: #3cba92;
+    border-radius: 2px;
+    color: white
+}
+.w3-card-header {
+    background: #525661;
+    color: white;
+    font-family: 'Roboto', serif;
+    margin: 0;
+    padding: 2%;
+}
+#modal-content-body {
+    margin: 0;
+    padding: 3%;
+}
+.pagination > li {
+    cursor: pointer;
+    font-size: 8px;
+}
+.pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 1% 0;
+    border-radius: 4px;
+}
+.select {
+    background-image: linear-gradient(to top, #ebebeb, #ffffff);
+    border: solid 1px #e8e8e8;
+    width: 100%;
+    height: 35px;
+    font-family: 'Roboto', serif;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.71;
+    letter-spacing: normal;
+    text-align: left;
+    color: #858890;
+    color: var(--slate-grey);
+    cursor: pointer;
+}
+.lib {
+    width: 28%;
+    display: inline-block;
+    opacity: 0.8;
+    margin: 1%;
+    padding: 1%;
+    color: #858890;
+}

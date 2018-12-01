@@ -1,0 +1,44 @@
+{% extends "task_base.html" %}
+
+{% load static %}
+{% block title %} Login {% endblock %}
+{% block extraheaad %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="/static/css/login.css" />
+{% endblock %}
+{% block con-body %}
+    <div class="row login-form">
+        <div class="col-sm-12 login-header">TASK MANAGEMENT - LOGIN</div>
+        <div class="col-sm-12 login-form-body" id="login-form-body">
+        {% if messages %}
+            {% if 'authToken' in request.session %}
+                    <div class="alert alert-success">
+                {% else %}
+                    <div class="alert alert-danger">
+                {% endif %}
+                    {% for message in messages %}
+                        <p style="text-align: center;">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form id="login_form" method="post" action="/" autocomplete="off">
+                {% csrf_token %} 
+                <div class="group">
+                    <input type="text" required id="username" autocomplete="off" maxlength="6" name="username" />
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label>Username</label>
+                </div>
+                <div class="group" style="margin-bottom: 5%">
+                    <input type="password" required id="password" autocomplete="new-password" maxlength="12" name="password" />
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label>Password</label>
+                </div>
+                <div class="group">
+                    <button type="submit" id="login_btn">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
