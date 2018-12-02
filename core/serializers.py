@@ -13,5 +13,5 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = (
             "title", "description", "creator", "acceptor", "priority", "state",
-            "timeline", "created"
+            "timeline", "created", "id"
         )

@@ -63,18 +63,31 @@
                             </div>
                         </div>
                         <div class="row" id="modal-content-body">
-                            <div class="group">
-                                <input type="text" required id="title" autocomplete="off" maxlength="128" name="title" />
-                                <span class="highlight"></span>
-                                <span class="bar"></span>
-                                <label>Title</label>
-                            </div>
-                            <div class="group">
-                                <input type="text" required id="description" autocomplete="off" name="description" />
-                                <span class="highlight"></span>
-                                <span class="bar"></span>
-                                <label>Description</label>
-                            </div>
+                            <form onsubmit="return _dash.create();">
+                                <div class="group">
+                                    <input type="text" required id="title" autocomplete="off" maxlength="128" name="title" />
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Title</label>
+                                </div>
+                                <div class="group">
+                                    <input type="text" required id="description" autocomplete="off" name="description" />
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                    <label>Description</label>
+                                </div>
+                                <div class="group">
+                                    <label class="label-x">Priority</label>
+                                    <select id="priority" name="priority" id="priority" required="required">
+                                        <option value="high">High</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="low" selected="selected">Low</option>
+                                    </select>
+                                </div>
+                                <div class="group">
+                                    <button type="submit" id="create">Create</button>
+                                </div>
+                            </form>
                         </div>
                         <div id="modal-content-footer"></div>
                     </div>

@@ -32,7 +32,7 @@
 }
 .task-header {
     padding: 1%;
-    background-color: #525661;
+    background-color: steelblue;
     color: #ffffff;
     font-family: 'Roboto', serif;
     font-size: 16px;
@@ -42,22 +42,29 @@
     line-height: 1.5;
     letter-spacing: normal;
 }
-.task-body {
-    padding: 5%;
-
+#task-body {
+    padding: 3%;
+    height: calc(100% - 40px);
+    overflow-y: scroll;
 }
 .group { 
     position:relative;
     margin-bottom:45px; 
 }
+
 input {
-    font-size:18px;
+    font-size:14px;
     padding:10px 10px 10px 5px;
     display:block;
     width:60%;
     border:none;
     border-bottom:1px solid #757575;
 }
+
+#description {
+    font-size: 10px;
+}
+
 input:focus { outline:none; }
 
 label {
@@ -72,6 +79,29 @@ label {
     -moz-transition:0.2s ease all; 
     -webkit-transition:0.2s ease all;
     font-family: 'Roboto', serif;
+}
+
+.label-x {
+    position: initial;
+    display: block;
+}
+
+select {
+    background-image: linear-gradient(to top, #ebebeb, #ffffff);
+    border: solid 1px #e8e8e8;
+    width: 60%;
+    height: 35px;
+    font-family: 'Roboto', serif;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.71;
+    letter-spacing: normal;
+    text-align: left;
+    color: #525661;
+    color: var(--slate-grey);
+    cursor: pointer
 }
 
 input:focus ~ label, input:valid ~ label        {
@@ -150,4 +180,42 @@ a {
 .add_task {
     float: right;
     cursor: pointer;
+}
+
+#create {
+    width: 25%;
+    height: 31px;
+    float: right;
+}
+
+.general-label {
+    position: initial;
+}
+.standardTable, .standardTable:hover {
+  text-decoration: none !important
+}
+.standardTable>thead>tr>th {
+  background: lightslategrey;
+  color: #f7f7f7 !important;
+  border: none;
+  text-decoration: none !important;
+  font-family: 'Roboto', serif;
+  padding: 2px;
+  text-align: center;
+}
+
+.standardTable> tbody>tr>td,.standardTable> tbody>tr>td:hover {
+  word-wrap: break-word;
+  border: 0;
+  text-align: left;
+  text-decoration: none !important;
+  font-family: 'Roboto', serif;
+  padding: 2px;
+  text-align: center;
+}
+table > tbody > tr:nth-of-type(even){
+  background-color: #fbfbfb;
+}
+table > tbody > tr:nth-of-type(odd){
+  background-color: white;
 }

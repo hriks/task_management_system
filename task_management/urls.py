@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^task/all$', views.getTasksList),
     url(r'^task/new$', views.getNewTasksList),
     url(r'^task/create/$', views.createTask, name='createNewTask'),
+    url(r'^task/update/$', views.updateTask, name='updateTask'),
     url(r'^logout$', views.Logout.as_view()),
     url(r'^', views.Login.as_view(), name='loginview')
 ]

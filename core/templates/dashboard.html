@@ -6,6 +6,9 @@
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css" />
     <script src="/static/js/dashboard.js"></script>
+    <script type="text/javascript">
+        const OPERATOR_TYPE = "{{operator.operator_type|safe}}"
+    </script>
 {% endblock %}
 {% block heading-title %}Task Managment - Dashboard{% endblock %}
 {% block con-body %}
@@ -16,6 +19,33 @@
                 <i class="fa fa-plus"></i> Add Task
             </span>
         </div>
-        <div class="col-sm-12 task-form-body" id="task-body"></div>
+        <div class="col-sm-12 task-form-body" id="task-body">
+            <label class="general-label">New Task(s)</label>
+            <table class="table standardTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>State</th>
+                        <th>Priority</th>
+                        <th>Creator</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="newtasks"></tbody>
+            </table>
+            <label class="general-label">Tasks</label>
+            <table class="table standardTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>State</th>
+                        <th>Priority</th>
+                        <th>Creator</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks"></tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

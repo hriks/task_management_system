@@ -118,7 +118,7 @@ class Task(models.Model):
     PRIORITY_CHOICES = (('low', 'Low'), ('medium', 'Medium'), ('high', 'High'))
     STATE_CHOICES = (
         ('new', 'New'), ('cancelled', 'Cancelled'),
-        ('accepted', 'Accepted'), ('decline', 'Decline'),
+        ('accepted', 'Accepted'), ('declined', 'Declined'),
         ('completed', 'Completed')
     )
     title = models.CharField(max_length=128)
@@ -150,26 +150,30 @@ class Task(models.Model):
             "accepted_by": self.accepted_by.username if self.accepted_by else '-'  # noqa
         })
 
-    def updateState(self, data, operator=None):
+    def updateState(self, operator=None, **data):
         self.state = data.get('state')
         if self.state == 'accepted' and operator:
             assert Task.objects.filter(
                 state="accepted", accepted_by=operator
             ).count() < 3, "Delivery Person could not have more than 3 pending tasks."  # noqa
             self.accepted_by = operator
+        if self.state == 'declined' and self.accepted_by:
+            self.state = 'new'
+            self.accepted_by = None
         self.save()
 
     @classmethod
     def create(cls, operator, title, description, priority="low"):
         assert operator.operator_type == 'manager', 'Only manager can create new ticket.'  # noqa
-        cls.objects.create(title=title, created_by=operator, priority=priority)
+        return cls.objects.create(
+            title=title, created_by=operator, description=description,
+            priority=priority)
 
     @classmethod
     def getTasksQueryset(cls, operator=None):
-        queryset = cls.objects.all()
+        queryset = cls.objects.exclude(state__in=['new', 'cancelled'])
         if operator and operator.operator_type == 'delivery_person':
-            queryset = queryset.filter(
-                accepted_by=operator).exclude(state='new')
+            queryset = queryset.filter(accepted_by=operator)
         return queryset
 
     @classmethod

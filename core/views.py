@@ -82,7 +82,7 @@ def createTask(request, operator, *args, **kwargs):
             Task.create(
                 operator, data['title'], data.get('description', ''),
                 data['priority'])
-        ))
+        ).data, status=status.HTTP_201_CREATED)
     except KeyError:
         return Response(
             {"message": "Required fields not found"},
@@ -92,3 +92,20 @@ def createTask(request, operator, *args, **kwargs):
             {"message": str(e)}, status=status.HTTP_409_CONFLICT)
     except Exception as e:
         raise e
+
+
+@api_view(["POST"])
+@auth_required()
+def updateTask(request, operator, *args, **kwargs):
+    try:
+        from core.models import Task
+        task = Task.objects.get(id=request.data.get("id"))
+        task.updateState(operator, **request.data)
+        return Response({}, status=status.HTTP_200_OK)
+    except KeyError:
+        return Response(
+            {"message": "Missing required fields"},
+            status=status.HTTP_400_BAD_REQUEST)
+    except AssertionError as e:
+        return Response(
+            {"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
