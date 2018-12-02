@@ -122,7 +122,8 @@ class Task(models.Model):
         ('completed', 'Completed')
     )
     title = models.CharField(max_length=128)
-    created_by = models.ForeignKey(Operator, related_name='creator',)
+    description = models.TextField()
+    created_by = models.ForeignKey(Operator, related_name='creator')
     accepted_by = models.ForeignKey(
         Operator, related_name='delivery_person', null=True, blank=True)
     priority = models.CharField(max_length=16, choices=PRIORITY_CHOICES)
@@ -159,7 +160,7 @@ class Task(models.Model):
         self.save()
 
     @classmethod
-    def create(cls, title, operator, priority="low"):
+    def create(cls, operator, title, description, priority="low"):
         assert operator.operator_type == 'manager', 'Only manager can create new ticket.'  # noqa
         cls.objects.create(title=title, created_by=operator, priority=priority)
 

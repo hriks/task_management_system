@@ -424,7 +424,9 @@ td p {
 .tab-content, .con-body {
   background-color: #f7f7f7;
 }
+
 .tick {color: #64b66b}
+
 .cross {color: red}
 
 ::-webkit-scrollbar {
@@ -495,8 +497,12 @@ td p {
     }
 }
 
+.cancel-material {
+    cursor: pointer;
+}
+
 .modal {
-    display: none;
+    display: block;
     position: fixed;
     z-index: 1000000;
     left: 0;

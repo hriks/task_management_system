@@ -79,7 +79,9 @@ def createTask(request, operator, *args, **kwargs):
         from core.models import Task
         data = request.data
         return Response(TaskSerializer(
-            Task.create(data['title'], operator, data['priority'])
+            Task.create(
+                operator, data['title'], data.get('description', ''),
+                data['priority'])
         ))
     except KeyError:
         return Response(

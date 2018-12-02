@@ -57,12 +57,25 @@
                     <div class="container-demo">
                         <div class="row w3-card-header">
                             <div class='loader_modal' id='loader'></div>
-                            <div class="col-sm-10" id="modal-heading">AVAIL FINANCE - LOAN APPLICATION</div>
-                            <div class="col-sm-2">
-                                <img src="/static/images/repayment/cancel-material.svg" class="cancel---material" onclick="Dashboard.close('id01')" />
+                            <div class="col-sm-11" id="modal-heading">ADD  TASK</div>
+                            <div class="col-sm-1">
+                                <img src="/static/images/cancel-material.svg" class="cancel-material" onclick="Dashboard.close('id01')" />
                             </div>
                         </div>
-                        <div class="row" id="modal-content-body"></div>
+                        <div class="row" id="modal-content-body">
+                            <div class="group">
+                                <input type="text" required id="title" autocomplete="off" maxlength="128" name="title" />
+                                <span class="highlight"></span>
+                                <span class="bar"></span>
+                                <label>Title</label>
+                            </div>
+                            <div class="group">
+                                <input type="text" required id="description" autocomplete="off" name="description" />
+                                <span class="highlight"></span>
+                                <span class="bar"></span>
+                                <label>Description</label>
+                            </div>
+                        </div>
                         <div id="modal-content-footer"></div>
                     </div>
                 </div>

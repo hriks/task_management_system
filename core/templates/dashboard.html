@@ -1,15 +1,21 @@
 {% extends "task_base.html" %}
 
 {% load static %}
-{% block title %} Login {% endblock %}
+{% block title %} Home {% endblock %}
 {% block extraheaad %}
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css" />
+    <script src="/static/js/dashboard.js"></script>
 {% endblock %}
 {% block heading-title %}Task Managment - Dashboard{% endblock %}
 {% block con-body %}
     <div class="row task-form">
-        <div class="col-sm-12 task-header">TASKS</div>
-        <div class="col-sm-12 tasl-form-body" id="task-body"></div>
+        <div class="col-sm-12 task-header">
+             TASK  LIST
+            <span class="add_task" onclick="Dashboard.openModal('id01')">
+                <i class="fa fa-plus"></i> Add Task
+            </span>
+        </div>
+        <div class="col-sm-12 task-form-body" id="task-body"></div>
     </div>
 {% endblock %}
