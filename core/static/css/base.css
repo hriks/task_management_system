@@ -427,10 +427,6 @@ td p {
 .tick {color: #64b66b}
 .cross {color: red}
 
-html {
-    overflow: scroll;
-    overflow-x: hidden;
-}
 ::-webkit-scrollbar {
     width: 8px;
     margin: 10px

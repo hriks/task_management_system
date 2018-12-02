@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, IntegrityError
+from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
@@ -102,7 +102,8 @@ class Operator(models.Model):
         """
         data = request.POST.dict()
         try:
-            operator = cls.objects.get(username=data.get('username', ''))
+            operator = cls.objects.get(
+                username=data.get('username', '').lower())
             validated = operator.vault.check_password(
                 data.get('password', ''))
             if validated:
@@ -134,7 +135,7 @@ class Task(models.Model):
     def save(self, *args, **kwargs):
         try:
             current = Task.objects.get(id=self.id)
-            if current.state != self.state:
+            if current.state != self.state or current.accepted_by != self.accepted_by:  # noqa
                 self.addTimeline()
         except Task.DoesNotExist:
             self.addTimeline()
@@ -144,7 +145,8 @@ class Task(models.Model):
         self.timeline.append({
             "state": self.state,
             "time": timezone.now().strftime("%d/%m/%Y %H:%M:%S"),
-            "created_by": self.created_by.username if self.created_by else '-'
+            "created_by": self.created_by.username,
+            "accepted_by": self.accepted_by.username if self.accepted_by else '-'  # noqa
         })
 
     def updateState(self, data, operator=None):
@@ -162,15 +164,17 @@ class Task(models.Model):
         cls.objects.create(title=title, created_by=operator, priority=priority)
 
     @classmethod
-    def getTasksList(cls, operator=None):
-        from core.serializers import TaskSerializer
-        queryset = cls.objects.exclude(state='new')
-        newTaskQuerySet = cls.objects.filter(state="new")
+    def getTasksQueryset(cls, operator=None):
+        queryset = cls.objects.all()
         if operator and operator.operator_type == 'delivery_person':
-            queryset = queryset.filter(accepted_by=operator)
-            newTaskQuerySet = newTaskQuerySet.objects.filter(
+            queryset = queryset.filter(
+                accepted_by=operator).exclude(state='new')
+        return queryset
+
+    @classmethod
+    def getNewTasksQueryset(cls, operator=None):
+        queryset = cls.objects.filter(state="new")
+        if operator and operator.operator_type == 'delivery_person':
+            queryset = queryset.objects.filter(
                 operator=operator, priority="high").earliest('created')
-        return {
-            "tasks": TaskSerializer(queryset, many=True).data,
-            "new_tasks": TaskSerializer(newTaskQuerySet, many=True).data
-        }
+        return queryset

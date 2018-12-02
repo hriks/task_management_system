@@ -1,0 +1,15 @@
+{% extends "task_base.html" %}
+
+{% load static %}
+{% block title %} Login {% endblock %}
+{% block extraheaad %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css" />
+{% endblock %}
+{% block heading-title %}Task Managment - Dashboard{% endblock %}
+{% block con-body %}
+    <div class="row task-form">
+        <div class="col-sm-12 task-header">TASKS</div>
+        <div class="col-sm-12 tasl-form-body" id="task-body"></div>
+    </div>
+{% endblock %}

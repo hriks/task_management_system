@@ -7,6 +7,7 @@ class TaskSerializer(serializers.ModelSerializer):
         read_only=True, source='created_by.username')
     acceptor = serializers.CharField(
         read_only=True, source="accepted_by.username")
+    created = serializers.DateTimeField(format="%d/%m/%Y %H:%M %p")
 
     class Meta:
         model = Task
