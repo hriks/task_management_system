@@ -15,9 +15,11 @@
     <div class="row task-form">
         <div class="col-sm-12 task-header">
              TASK  LIST
-            <span class="add_task" onclick="Dashboard.openModal('id01')">
-                <i class="fa fa-plus"></i> Add Task
-            </span>
+            {% if operator.operator_type == 'manager' %}
+                <span class="add_task" onclick="Dashboard.openModal('id01')">
+                    <i class="fa fa-plus"></i> Add Task
+                </span>
+            {% endif %}
         </div>
         <div class="col-sm-12 task-form-body" id="task-body">
             <label class="general-label">New Task(s)</label>
@@ -41,6 +43,7 @@
                         <th>State</th>
                         <th>Priority</th>
                         <th>Creator</th>
+                        <th>Acceptor</th>
                         <th>Action</th>
                     </tr>
                 </thead>

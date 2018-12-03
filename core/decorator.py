@@ -11,7 +11,7 @@ def auth_required(methods={"GET": 0, "POST": 0, "PUT": 0, "DELETE": 0}):
                     return view(request, operator, *args, **kw)
             from django.contrib import messages
             messages.error(request, "Hi, You need to login to view this page.")
-            return redirect('/')
+            return redirect('/login/')
         return wrapper
 
     return wrap

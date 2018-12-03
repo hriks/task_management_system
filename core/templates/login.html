@@ -21,7 +21,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <form id="login_form" method="post" action="/" autocomplete="off">
+            <form id="login_form" method="post" action="/login/" autocomplete="off">
                 {% csrf_token %} 
                 <div class="group">
                     <input type="text" required id="username" autocomplete="off" maxlength="6" name="username" />

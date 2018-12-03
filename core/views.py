@@ -19,7 +19,7 @@ class Login(views.View):
 
     def get(self, request, *args, **kwargs):
         if 'authToken' in request.session:
-            return redirect('/home')
+            return redirect('/')
         return render(request, self.template_name)
 
     @method_decorator(views.decorators.csrf.csrf_exempt)
@@ -29,8 +29,8 @@ class Login(views.View):
         messages.error(request, message)
         if authToken:
             request.session['authToken'] = authToken
-            return redirect('/home')
-        return redirect('/')
+            return redirect('/')
+        return redirect('/login/')
 
 
 class Dashboard(views.View):
@@ -51,7 +51,7 @@ class Logout(views.View):
             request.session.pop('authToken')
         messages.error(
             request, "%s ! You had been logout successfully!" % operator.username.title())  # noqa
-        return redirect('/')
+        return redirect('/login/')
 
 
 @api_view(["GET"])

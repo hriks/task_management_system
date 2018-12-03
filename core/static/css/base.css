@@ -542,7 +542,28 @@ button[type=submit], button[type=submit]:active {
     border-radius: 2px;
     color: white;
     height: 30px;
-    width: 80%;}
+    width: 80%;
+}
+
+#decline, #decline:active {
+    background-image: linear-gradient(to bottom, darkred,red);
+    border: darkred;
+    border-radius: 2px;
+    color: white;
+    height: 25px;
+    width: 45%;
+}
+
+#complete, #complete:active {
+    width: 45%;
+    height: 25px;
+    margin-right: 4%
+}
+
+#accept, #accept:active {
+    width: 80%;
+    height: 25px;
+}
 
 .w3-card-header {
     background: #525661;

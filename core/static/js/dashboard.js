@@ -83,17 +83,19 @@ class Dashboard {
         var resp = ''
         if (this.tasks.length == 0) {
             resp += '<tr>'
-            resp += '<td colspan="5" class="nr">No Tasks Pending</td>'
+            resp += '<td colspan="6" class="nr">No Tasks Pending</td>'
             resp += '</tr>'
         } else {
             for (let index=0; index < this.tasks.length; index++) {
                 let row = this.tasks[index]
                 resp += '<tr>'
-                resp += '<td style="text-align: left">' + row.title.title() + '</td>'
-                resp += '<td>' + row.state.title() + '</td>'
-                resp += '<td>' + row.priority.title() + '</td>'
-                resp += '<td>' + row.creator.title() + '</td>'
-                resp += '<td>' + this.getActionButton(row, "all") + '</td>'
+                resp += '<td style="text-align: left width: 15%">' + row.title.title() + '</td>'
+                resp += '<td style="width: 15%">' + row.state.title() + '</td>'
+                resp += '<td style="width: 15%">' + row.priority.title() + '</td>'
+                resp += '<td style="width: 15%">' + row.creator.title() + '</td>'
+                resp += '<td style="width: 15%">' + (
+                    row.hasOwnProperty('acceptor') && row.acceptor != null ? row.acceptor.title() : '-') + '</td>'
+                resp += '<td style="width: 25%">' + this.getActionButton(row, "all") + '</td>'
                 resp += '</tr>'
             }
         }
@@ -103,12 +105,36 @@ class Dashboard {
     getActionButton(row, task_type) {
         if (OPERATOR_TYPE === 'manager') {
             return '<button type="submit" id="cancel" onclick=_dash.cancel(' + row.id + ')>Cancel</button>'
+        } else {
+            if (task_type === 'new') {
+                return '<button type="submit" id="accept" onclick=_dash.accept(' + row.id + ')>Accept</button>'
+            } else {
+                var resp = '<button type="submit" id="complete" onclick=_dash.complete(' + row.id + ')>Complete</button>'
+                resp += '<button type="submit" id="decline" onclick=_dash.decline(' + row.id + ')>Decline</button>'
+                return resp
+            }
         }
     }
 
+    accept(id) {
+        this.update(id, 'accepted')
+    }
+
+    complete(id) {
+        this.update(id, 'completed')
+    }
+
+    decline(id) {
+        this.update(id, 'declined')
+    }
+
     cancel(id) {
-        var data = {"id": id, "state": "cancelled"}
-        Hriks.send_xml_request("POST", this.update_task_api, JSON.stringify(data))
+        this.update(id, 'cancelled')
+    }
+
+    update(id, state) {
+        var data = {"id": id, "state": state}
+        Hriks.send_xml_request("POST", this.update_task_api, JSON.stringify(data))        
     }
 }
 

@@ -4,12 +4,12 @@ from django.contrib import admin
 from core import views
 
 urlpatterns = [
-    url(r'^admin/$', admin.site.urls),
-    url(r'^home$', views.Dashboard.as_view()),
+    url(r'^admin/', admin.site.urls),
     url(r'^task/all$', views.getTasksList),
     url(r'^task/new$', views.getNewTasksList),
     url(r'^task/create/$', views.createTask, name='createNewTask'),
     url(r'^task/update/$', views.updateTask, name='updateTask'),
-    url(r'^logout$', views.Logout.as_view()),
-    url(r'^', views.Login.as_view(), name='loginview')
+    url(r'^logout/$', views.Logout.as_view(), name='logoutview'),
+    url(r'^login/$', views.Login.as_view(), name='loginview'),
+    url(r'^', views.Dashboard.as_view()),
 ]

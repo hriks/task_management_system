@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from core.models import Task, Operator
+from core.forms import OperatorForm
 
 
 @admin.register(Operator)
 class OperatorAdmin(admin.ModelAdmin):
+    form = OperatorForm
     list_display = ("username", "operator_type", "created")
     search_fields = ('username',)
     list_filter = ('operator_type',)

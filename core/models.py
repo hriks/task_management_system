@@ -72,6 +72,11 @@ class Operator(models.Model):
         instance.save()
         return instance
 
+    def delete(self):
+        import pdb; pdb.set_trace()
+        Vault.objects.get(operator_id=self.id).delete()
+        super(Operator, self).delete()
+
     @property
     def vault(self, model='vault'):
         return ContentType.objects.get(
@@ -179,7 +184,11 @@ class Task(models.Model):
     @classmethod
     def getNewTasksQueryset(cls, operator=None):
         queryset = cls.objects.filter(state="new")
+        order = ["high", "medium", "low"]
+        order = {key: i for i, key in enumerate(order)}
+        queryset = sorted(
+            queryset, key=lambda query: order.get(query.priority, 0))
         if operator and operator.operator_type == 'delivery_person':
-            queryset = queryset.objects.filter(
-                operator=operator, priority="high").earliest('created')
+            if queryset:
+                queryset = [queryset[0]]
         return queryset
