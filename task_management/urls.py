@@ -5,6 +5,8 @@ from core import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^notifications$', views.getNotifications),
+    url(r'^update/notification$', views.updateNotification),
     url(r'^task/all$', views.getTasksList),
     url(r'^task/new$', views.getNewTasksList),
     url(r'^task/create/$', views.createTask, name='createNewTask'),

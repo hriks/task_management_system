@@ -7,7 +7,7 @@ from django.contrib import messages
 from django import views
 
 from core.decorator import auth_required
-from core.serializers import TaskSerializer
+from core.serializers import TaskSerializer, NotificationSerializer
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -81,11 +81,15 @@ def createTask(request, operator, *args, **kwargs):
     try:
         from core.models import Task
         data = request.data
-        return Response(TaskSerializer(
-            Task.create(
-                operator, data['title'], data.get('description', ''),
-                data['priority'])
-        ).data, status=status.HTTP_201_CREATED)
+        Task.create(
+            operator, data['title'], data.get('description', ''),
+            data['priority']
+        )
+        redis_publisher = RedisPublisher(
+            facility='update_task', **{'broadcast': True})
+        message = RedisMessage("update")
+        redis_publisher.publish_message(message)
+        return Response({}, status=status.HTTP_201_CREATED)
     except KeyError:
         return Response(
             {"message": "Required fields not found"},
@@ -116,3 +120,25 @@ def updateTask(request, operator, *args, **kwargs):
     except AssertionError as e:
         return Response(
             {"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@auth_required()
+def getNotifications(request, operator, *args, **kwargs):
+    from core.models import Notifications
+    return Response(
+        NotificationSerializer(
+            Notifications.getNotifications(operator), many=True).data,
+        status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@auth_required()
+def updateNotification(request, operator, *args, **kwargs):
+    from core.models import Notifications
+    Notifications.updateNotification(request.query_params.get('id'))
+    redis_publisher = RedisPublisher(
+        facility='update_task', **{'broadcast': True})
+    message = RedisMessage("update")
+    redis_publisher.publish_message(message)
+    return Response({}, status=status.HTTP_200_OK)

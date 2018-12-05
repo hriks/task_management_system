@@ -13,16 +13,21 @@ class Dashboard {
         this.new_task_api = '/task/new'
         this.create_task_api = '/task/create/'
         this.update_task_api = '/task/update/'
+        this.notification_api = '/notifications'
+        this.update_notifications_api = '/update/notification?id='
         this.hriks = new Hriks()
         this.container = $('#newtasks')
         this.tasksContainer = $('#tasks')
+        this.notificationsContainer = $('#notifications')
     }
 
     getTasks() {
         this.new_tasks = Hriks.send_xml_request("GET", this.new_task_api)[0]
         this.tasks = Hriks.send_xml_request("GET", this.task_api)[0]
+        this.notifications = Hriks.send_xml_request("GET", this.notification_api)[0]
         this.renderNewTasks()
         this.renderTasks()
+        this.renderNotifications()
     }
 
     static socketTasks() {
@@ -47,9 +52,9 @@ class Dashboard {
         $('#create').html('<i class="fa fa-circle-o-notch fa-spin"></i> Creating')
         var response = Hriks.send_xml_request("POST", this.create_task_api, JSON.stringify(data))
         if (response == undefined) {
-            console.log(e)
-        } else if (response[1] != 200) {
-            console.log(e)
+            alert("Something went wrong")
+        } else if (![200, 201].includes(response[1])) {
+            alert(response[0].message)
         }
         Dashboard.close('id01')
         $('#create').html('Create')
@@ -87,8 +92,9 @@ class Dashboard {
         } else {
             for (let index=0; index < this.tasks.length; index++) {
                 let row = this.tasks[index]
+                let onclick = OPERATOR_TYPE == 'manager' ? 'onclick=Dashboard.showCaseTask(' + row.id + ')': ''
                 resp += '<tr>'
-                resp += '<td style="text-align: left width: 15%">' + row.title.title() + '</td>'
+                resp += '<td style="text-align: left width: 15%; cursor:pointer;" ' + onclick + '>' + row.title.title() + '</td>'
                 resp += '<td style="width: 15%">' + row.state.title() + '</td>'
                 resp += '<td style="width: 15%">' + row.priority.title() + '</td>'
                 resp += '<td style="width: 15%">' + row.creator.title() + '</td>'
@@ -96,9 +102,46 @@ class Dashboard {
                     row.hasOwnProperty('acceptor') && row.acceptor != null ? row.acceptor.title() : '-') + '</td>'
                 resp += '<td style="width: 25%">' + this.getActionButton(row, "all") + '</td>'
                 resp += '</tr>'
+                if (OPERATOR_TYPE === 'manager') {
+                    resp += '<tr id="task_info_' + row.id + '" class="task_infos">'
+                    resp += '<td colspan="6">'
+                    resp == '<div>' + row.description + '</div>'
+                    resp += '<div><table class="table standardTable">'
+                    resp += '<thead><tr><th>State</th><th>Accepted by</th>'
+                    resp += '<th>Created by</th><th>Time</th>'
+                    resp += '</tr><tbody>'
+                    for (let index=0; index<row.timeline.length; index++) {
+                        let timeline = row.timeline[index]
+                        resp += '<tr>'
+                        resp += '<td>' + timeline.state.title() + '</td>'
+                        resp += '<td>' + timeline.accepted_by.title() + '</td>'
+                        resp += '<td>' + timeline.created_by.title() + '</td>'
+                        resp += '<td>' + timeline.time.title() + '</td>'
+                        resp += '</tr>'
+                    }
+                    resp += '</tbody></table></div></td>'
+                    resp += '</tr>'
+                }
+
             }
         }
         this.tasksContainer.html(resp)
+    }
+
+    static showCaseTask(row_id) {
+        $('.task_infos').not('#task_info_' + row_id).hide()
+        $('#task_info_' + row_id).toggle()
+    }
+
+    renderNotifications() {
+        var resp = ''
+        for (let index=0; index < this.notifications.length; index++){
+            resp += '<p class="notificationsp">' + (this.notifications[index].message)
+            resp += '<span class="readnotifi" onclick="_dash.read('+this.notifications[index].id
+            resp += ')"><i class="fa fa-close"></i></span></p>'
+        }
+        this.notificationsContainer.html(resp)
+
     }
 
     getActionButton(row, task_type) {
@@ -113,6 +156,10 @@ class Dashboard {
                 return resp
             }
         }
+    }
+
+    read(id) {
+        Hriks.send_xml_request("POST", this.update_notifications_api + id)
     }
 
     accept(id) {
@@ -133,7 +180,11 @@ class Dashboard {
 
     update(id, state) {
         var data = {"id": id, "state": state}
-        Hriks.send_xml_request("POST", this.update_task_api, JSON.stringify(data))        
+        var response = Hriks.send_xml_request("POST", this.update_task_api, JSON.stringify(data))
+        if (response[1] == 400) {
+            return alert(response[0].message)
+        }
+
     }
 }
 

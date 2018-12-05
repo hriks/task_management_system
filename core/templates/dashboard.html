@@ -18,24 +18,21 @@
                 connected: on_connected,
                 receive_message: Dashboard.socketTasks,
                 disconnected: on_disconnected,
-                heartbeat_msg: {{ WS4REDIS_HEARTBEAT }}
+                heartbeat_msg: "{{ WS4REDIS_HEARTBEAT }}"
             });
-    
-            // attach this function to an event handler on your site            
-    
+
             function on_connecting() {
                 console.log('Websocket is connecting...')
             }
-    
+
             function on_connected() {
                 console.log('connected')
             }
-    
+
             function on_disconnected(evt) {
                 console.log('Websocket was disconnected: ' + JSON.stringify(evt))
             }
     
-            // receive a message though the websocket from the server
         });
         
     </script>
@@ -52,6 +49,7 @@
             {% endif %}
         </div>
         <div class="col-sm-12 task-form-body" id="task-body">
+            <div class="notifications" id="notifications"></div>
             <label class="general-label">New Task(s)</label>
             <table class="table standardTable">
                 <thead>

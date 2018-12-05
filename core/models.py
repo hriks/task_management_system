@@ -156,6 +156,7 @@ class Task(models.Model):
         })
 
     def updateState(self, operator=None, **data):
+        notif = None
         self.state = data.get('state')
         if self.state == 'accepted' and operator:
             assert Task.objects.filter(
@@ -163,9 +164,15 @@ class Task(models.Model):
             ).count() < 3, "Delivery Person could not have more than 3 pending tasks."  # noqa
             self.accepted_by = operator
         if self.state == 'declined' and self.accepted_by:
+            notif = Notifications(
+                operator=self.created_by,
+                message="Hi, %s has declined the task with title %s." % (
+                    self.accepted_by.username, self.title))
             self.state = 'new'
             self.accepted_by = None
         self.save()
+        if notif:
+            notif.save()
 
     @classmethod
     def create(cls, operator, title, description, priority="low"):
@@ -188,7 +195,23 @@ class Task(models.Model):
         order = {key: i for i, key in enumerate(order)}
         queryset = sorted(
             queryset, key=lambda query: order.get(query.priority, 0))
-        if operator and operator.operator_type == 'delivery_person':
-            if queryset:
-                queryset = [queryset[0]]
+        if operator and operator.operator_type == 'delivery_person' and queryset: # noqa
+            queryset = [queryset[0]]
         return queryset
+
+
+class Notifications(models.Model):
+    operator = models.ForeignKey(Operator)
+    message = models.TextField()
+    notified = models.BooleanField(default=False)
+
+    @classmethod
+    def getNotifications(cls, operator):
+        queryset = cls.objects.filter(notified=False, operator=operator)
+        return queryset
+
+    @classmethod
+    def updateNotification(cls, notif_id=None):
+        notify = cls.objects.filter(id=notif_id)
+        if notify.exists():
+            notify.update(notified=True)

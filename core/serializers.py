@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Task
+from core.models import Task, Notifications
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -15,3 +15,10 @@ class TaskSerializer(serializers.ModelSerializer):
             "title", "description", "creator", "acceptor", "priority", "state",
             "timeline", "created", "id"
         )
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Notifications
+        fields = "__all__"

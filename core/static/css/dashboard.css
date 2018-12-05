@@ -219,3 +219,18 @@ table > tbody > tr:nth-of-type(even){
 table > tbody > tr:nth-of-type(odd){
   background-color: white;
 }
+.readnotifi{
+    float: right;
+    cursor: pointer;
+    display: block;
+}
+.notificationsp{
+    font-size: 10px;
+    background: cadetblue;
+    color: ghostwhite;
+    padding: 3px;    
+}
+
+.task_infos {
+    display: none;
+}
