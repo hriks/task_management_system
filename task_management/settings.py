@@ -55,8 +55,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'core'
+    'core',
+    'ws4redis'
 ]
+
+WEBSOCKET_URL = '/ws/'
+
+WS4REDIS_EXPIRE = 7200
+
+WS4REDIS_PREFIX = 'ws'
+
+WSGI_APPLICATION = 'ws4redis.django_runserver.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,13 +92,16 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'ws4redis.context_processors.default'
             ],
         },
     },
 ]
 
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_PREFIX = 'session'
 
-WSGI_APPLICATION = 'task_management.wsgi.application'
+WSGI_APPLICATION = 'ws4redis.django_runserver.application'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR + '/media'

@@ -1,8 +1,3 @@
-$(document).ready(function(){
-    _dash = new Dashboard()
-    _dash.getTasks()
-})
-
 String.prototype.title = function() {
     if (this == "None" || this == "") {
         return "-"
@@ -28,6 +23,10 @@ class Dashboard {
         this.tasks = Hriks.send_xml_request("GET", this.task_api)[0]
         this.renderNewTasks()
         this.renderTasks()
+    }
+
+    static socketTasks() {
+        return _dash.getTasks()
     }
 
     static close(id) {
