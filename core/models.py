@@ -44,6 +44,12 @@ class Vault(models.Model):
             # If Password has invalid Salt
             return False
 
+    @classmethod
+    def create(cls, operator_id, password):
+        return Vault.objects.create(
+            operator_id=operator_id, password=password
+        )
+
 
 class Operator(models.Model):
     """
@@ -72,9 +78,9 @@ class Operator(models.Model):
         instance.save()
         return instance
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         Vault.objects.get(operator_id=self.id).delete()
-        super(Operator, self).delete()
+        super(Operator, self).delete(*args, **kwargs)
 
     @property
     def vault(self, model='vault'):

@@ -8,7 +8,10 @@ class OperatorForm(forms.ModelForm):
 
     def save(self, commit=True):
         password = self.cleaned_data.get('password', None)
-        return super(OperatorForm, self).save(commit=commit)
+        super(OperatorForm, self).save(commit=commit)
+        from core.models import Vault
+        Vault.create(self.instance.id, password)
+        return self.instance
 
     class Meta:
         model = Operator
