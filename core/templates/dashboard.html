@@ -9,30 +9,12 @@
     <script src="/static/js/dashboard.js"></script>
     <script type="text/javascript">
         const OPERATOR_TYPE = "{{operator.operator_type|safe}}"
+        const WS4REDIS_HEARTBEAT = {{ WS4REDIS_HEARTBEAT }}
+        const WEBSOCKET_URI = "{{ WEBSOCKET_URI }}"
+        var ws4redis = null
         $(document).ready(function($) {
             _dash = new Dashboard()
-
-            var ws4redis = WS4Redis({
-                uri: '{{ WEBSOCKET_URI }}update_task?subscribe-broadcast',
-                connecting: on_connecting,
-                connected: on_connected,
-                receive_message: Dashboard.socketTasks,
-                disconnected: on_disconnected,
-                heartbeat_msg: "{{ WS4REDIS_HEARTBEAT }}"
-            });
-
-            function on_connecting() {
-                console.log('Websocket is connecting...')
-            }
-
-            function on_connected() {
-                console.log('connected')
-            }
-
-            function on_disconnected(evt) {
-                console.log('Websocket was disconnected: ' + JSON.stringify(evt))
-            }
-    
+            _dash.getTasks()
         });
         
     </script>

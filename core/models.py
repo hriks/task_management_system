@@ -73,7 +73,6 @@ class Operator(models.Model):
         return instance
 
     def delete(self):
-        import pdb; pdb.set_trace()
         Vault.objects.get(operator_id=self.id).delete()
         super(Operator, self).delete()
 

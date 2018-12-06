@@ -19,6 +19,30 @@ class Dashboard {
         this.container = $('#newtasks')
         this.tasksContainer = $('#tasks')
         this.notificationsContainer = $('#notifications')
+
+    }
+
+    static openSocket() {
+        ws4redis = WS4Redis({
+            uri: WEBSOCKET_URI + 'update_task?subscribe-broadcast',
+            connecting: Dashboard.on_connecting,
+            connected: Dashboard.on_connected,
+            receive_message: Dashboard.socketTasks,
+            disconnected: Dashboard.on_disconnected,
+            heartbeat_msg: WS4REDIS_HEARTBEAT
+        });
+    }
+
+    static on_connecting() {
+        console.log('Websocket is connecting...')
+    }
+
+    static on_connected() {
+        console.log('connected')
+    }
+
+    static on_disconnected(evt) {
+        console.log('Websocket was disconnected: ' + JSON.stringify(evt))
     }
 
     getTasks() {
@@ -28,10 +52,11 @@ class Dashboard {
         this.renderNewTasks()
         this.renderTasks()
         this.renderNotifications()
+        ws4redis == null ? Dashboard.openSocket() : null
     }
 
-    static socketTasks() {
-        return _dash.getTasks()
+    static socketTasks(data) {
+        _dash.getTasks()
     }
 
     static close(id) {
@@ -226,7 +251,7 @@ class Hriks {
     }
 
 
-    static send_xml_request(method, api, data={}, sync=false, callback=null) {
+    static send_xml_request(method, api, data=null, sync=false, callback=null) {
         try {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.open( method, api, sync );

@@ -79,6 +79,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'task_management.urls'
 
+WS4REDIS_HEARTBEAT = '--heartbeat--'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -101,7 +103,6 @@ TEMPLATES = [
 SESSION_ENGINE = 'redis_sessions.session'
 SESSION_REDIS_PREFIX = 'session'
 
-WSGI_APPLICATION = 'ws4redis.django_runserver.application'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR + '/media'

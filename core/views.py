@@ -16,6 +16,9 @@ from rest_framework.response import Response
 from ws4redis.redis_store import RedisMessage
 from ws4redis.publisher import RedisPublisher
 
+redis_publisher = RedisPublisher(
+    facility='update_task', **{'broadcast': True})
+
 
 class Login(views.View):
     template_name = "login.html"
@@ -85,10 +88,7 @@ def createTask(request, operator, *args, **kwargs):
             operator, data['title'], data.get('description', ''),
             data['priority']
         )
-        redis_publisher = RedisPublisher(
-            facility='update_task', **{'broadcast': True})
-        message = RedisMessage("update")
-        redis_publisher.publish_message(message)
+        redis_publisher.publish_message(RedisMessage("update"))
         return Response({}, status=status.HTTP_201_CREATED)
     except KeyError:
         return Response(
@@ -108,10 +108,7 @@ def updateTask(request, operator, *args, **kwargs):
         from core.models import Task
         task = Task.objects.get(id=request.data.get("id"))
         task.updateState(operator, **request.data)
-        redis_publisher = RedisPublisher(
-            facility='update_task', **{'broadcast': True})
-        message = RedisMessage("update")
-        redis_publisher.publish_message(message)
+        redis_publisher.publish_message(RedisMessage("update"))
         return Response({}, status=status.HTTP_200_OK)
     except KeyError:
         return Response(
@@ -137,8 +134,5 @@ def getNotifications(request, operator, *args, **kwargs):
 def updateNotification(request, operator, *args, **kwargs):
     from core.models import Notifications
     Notifications.updateNotification(request.query_params.get('id'))
-    redis_publisher = RedisPublisher(
-        facility='update_task', **{'broadcast': True})
-    message = RedisMessage("update")
-    redis_publisher.publish_message(message)
+    redis_publisher.publish_message(RedisMessage("update"))
     return Response({}, status=status.HTTP_200_OK)
