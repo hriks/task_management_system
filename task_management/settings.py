@@ -4,9 +4,6 @@ import os
 
 import redis
 from kombu import Queue
-from celery.schedules import crontab
-
-import netifaces
 
 BROKER_URL = 'redis://127.0.0.1:6379'
 REDIS_POOL = redis.ConnectionPool.from_url(BROKER_URL)
@@ -17,13 +14,7 @@ CELERY_QUEUES = (
     Queue('celery'),
 )
 
-CELERYBEAT_SCHEDULE = {
-#    'daily_assigned_issue_reminder': {
-#        'task': 'apis.task.send_daily_assigned_issue',
-#        'schedule': crontab(hour='5', minute=51),
-#        'options': {'queue': 'celery'}
-#    }
-}
+CELERYBEAT_SCHEDULE = {}
 
 
 CELERY_TIMEZONE = 'Asia/Calcutta'
