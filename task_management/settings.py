@@ -32,7 +32,7 @@ STATIC_URL = '/static/'
 SECRET_KEY = os.environ.get(
     "SECRET_KEY", "AOKQMOASOQAQMMFP_@)$(DKA0-29301c2mix54")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
